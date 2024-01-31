@@ -79,8 +79,109 @@ group by locationid
 '11. From the following tables write a query in SQL to find the persons whose last name starts with letter 'L'. 
 Return BusinessEntityID, FirstName, LastName, and PhoneNumber. Sort the result on lastname and firstname.'
 
+select pp.businessentityid, p.firstname, p.lastname, pp.phonenumber
+from Person.PersonPhone pp
+join person.person p
+using (businessentityid)
+where p.lastname like 'L%'
 
-select businessentityid, firstname, lastname, phonenumber
-from Person.PersonPhone
-where lastname like 'L%'
-order by lastname, firstname
+'12. From the following table write a query in SQL to find the sum of subtotal column. Group the sum on distinct salespersonid and customerid. 
+Rolls up the results into subtotal and running total. Return salespersonid, customerid and sum of subtotal column i.e. sum_subtotal.
+(New Concept Rollup,Cube and sets)'
+
+select customerid, salespersonid, sum(subtotal) as sum_subtotal
+from sales.salesorderheader
+group by rollup (customerid, salespersonid)
+order by salespersonid
+
+'13. From the following table write a query in SQL to find the sum of the quantity of all combination of group of distinct locationid and shelf column. 
+Return locationid, shelf and sum of quantity as TotalQuantity.'
+
+select locationid, shelf, sum(quantity) as totalquantity
+from production.productinventory
+group by cube  (locationid, shelf)
+order by locationid
+
+'14. From the following table write a query in SQL to find the sum of the quantity with subtotal for each locationid. 
+Group the results for all combination of distinct locationid and shelf column. Rolls up the results into subtotal and running total. 
+Return locationid, shelf and sum of quantity as TotalQuantity.
+(Check chatgpt to understand)'
+
+select locationid, shelf, sum(quantity) as totalquantity
+from production.productinventory
+group by rollup  (locationid, shelf)
+order by locationid
+
+'15. From the following table write a query in SQL to find the total quantity for each locationid and calculate the grand-total for all locations. 
+Return locationid and total quantity. Group the results on locationid.'
+
+select locationid, sum(quantity) as totalquantity
+from production.productinventory
+group by rollup (locationid)
+
+'16. From the following table write a query in SQL to retrieve the number of employees for each City. Return city and number of employees. Sort the result in ascending order on city.'
+
+select a.city,count(b.businessentityid)
+from person.businessentityaddress b
+join person.address a using (addressid)
+group by a.city
+order by a.city
+
+'17. From the following table write a query in SQL to retrieve the total sales for each year. 
+Return the year part of order date and total due amount. Sort the result in ascending order on year part of order date.'
+
+select extract(year from orderdate) as year, count(salesorderid) as total_sales,sum(totaldue) as total_due
+from sales.Salesorderheader
+group by year
+
+'18. From the following table write a query in SQL to retrieve the total sales for each year. 
+Filter the result set for those orders where order year is on or before 2016. Return the year part of orderdate and total due amount. 
+Sort the result in ascending order on year part of order date.'
+
+select extract(year from orderdate) as year, count(salesorderid) as total_sales,sum(totaldue) as total_due
+from sales.Salesorderheader
+group by year
+having extract(year from orderdate) <= '2012'
+
+'18. From the following table write a query in SQL to retrieve the total sales for each year. 
+Filter the result set for those orders where order year is on or before 2016. Return the year part of orderdate and total due amount. 
+Sort the result in ascending order on year part of order date.'
+
+select contacttypeid, name
+from person.contacttype
+where name like '%Manager%'
+
+
+'20. From the following tables write a query in SQL to make a list of contacts who are designated as 'Purchasing Manager'. 
+Return BusinessEntityID, LastName, and FirstName columns. Sort the result set in ascending order of LastName, and FirstName.'
+
+
+SELECT pp.BusinessEntityID, LastName, FirstName
+    FROM Person.BusinessEntityContact AS pb 
+        INNER JOIN Person.ContactType AS pc
+            ON pc.ContactTypeID = pb.ContactTypeID
+        INNER JOIN Person.Person AS pp
+            ON pp.BusinessEntityID = pb.PersonID
+    WHERE pc.Name = 'Purchasing Manager'
+    ORDER BY LastName, FirstName;
+
+
+select p.businessentityid,p.lastname,p.firstname
+from person.contacttype c
+inner join person.businessentitycontact b 
+on c.contactypeid = b.contactypeid
+inner join person.person p
+on p.businessEntityId = b.personid
+'Check why the above query is not working'
+
+
+'rollup
+state,city
+state
+()
+cube
+state,city
+state
+city
+()
+sets'
