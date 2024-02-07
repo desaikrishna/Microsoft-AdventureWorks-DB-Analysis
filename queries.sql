@@ -267,6 +267,98 @@ FROM HumanResources.Employee
 ORDER BY DATE_PART('year',HireDate);
 
 
+'31. From the following table write a query in SQL to retrieve those persons whose last name begins with letter 'R'. 
+Return lastname, and firstname and display the result in ascending order on firstname and descending order on lastname columns.'
+
+select firstname, lastname
+from person.person
+where lastname like 'R%'
+order by firstname, lastname desc
+
+
+'32. From the following table write a query in SQL to ordered the BusinessEntityID column descendingly when SalariedFlag set to 'true' and BusinessEntityID in ascending order when SalariedFlag set to 'false'. 
+Return BusinessEntityID, SalariedFlag columns.(Did not work check)'
+
+select businessentityid, salariedflag
+from HumanResources.Employee
+order by (case when salariedflag = 'true' then businessentityid desc
+else businessentityid end);
+
+SELECT BusinessEntityID, SalariedFlag  
+FROM HumanResources.Employee  
+ORDER BY CASE SalariedFlag WHEN 'true' THEN BusinessEntityID END DESC  
+        ,CASE WHEN SalariedFlag ='false' THEN BusinessEntityID END;
+
+
+'33. From the following table write a query in SQL to set the result in order by the column TerritoryName when the column CountryRegionName 
+is equal to 'United States' and by CountryRegionName for all other rows.'
+
+select *
+from sales.vSalesPerson
+order by case when countryregionname ='United States' then territoryname
+else countryregionname end;
+
+'34. From the following table write a query in SQL to find those persons who lives in a territory and the value of salesytd except 0. 
+Return first name, last name,row number as 'Row Number', 'Rank', 'Dense Rank' and NTILE as 'Quartile', salesytd and postalcode. Order the output on postalcode column.'
+
+select p.firstname,p.lastname, s.salesytd,a.postalcode,
+row_number() over (order  by a.postalcode) as rownumber,
+rank() over (order  by a.postalcode) as rank,
+dense_rank() over (order  by a.postalcode) as denserank,
+ntile(4) over (order  by a.postalcode) as ntilee
+from person.person p
+join sales.salesperson s using (businessentityid)
+join person.businessentityaddress b using (businessentityid)
+join person.address a
+on b.addressid = a.addressid
+where s.salesytd <> 0
+and territoryid is not null
+
+
+'35. From the following table write a query in SQL to skip the first 10 rows from the sorted result set and return all remaining rows.'
+
+select * from humanresources.department
+order by departmentid offset 10
+
+
+'36. From the following table write a query in SQL to skip the first 5 rows and return the next 5 rows from the sorted result set.'
+
+select * from humanresources.department
+order by departmentid offset 5 limit 5
+
+'37. From the following table write a query in SQL to list all the products that are Red or Blue in color. 
+Return name, color and listprice.Sorts this result by the column listprice.'
+
+select name, color, listprice
+from production.product
+where color='Red' or color='Blue'
+order by listprice
+
+'38. Create a SQL query from the SalesOrderDetail table to retrieve the product name and any associated sales orders. Additionally, it returns any sales orders that dont have any 
+items mentioned in the Product table as well as any products that have sales orders other than those that are listed there. 
+Return product name, salesorderid. Sort the result set on product name column.'
+
+select p.name, s.salesorderid
+from production.product p
+full outer join sales.salesorderdetail s using (productid)
+order by p.name, salesorderid desc
+
+'39. From the following table write a SQL query to retrieve the product name and salesorderid. Both ordered and unordered products are included in the result set.'
+
+select p.name, s.salesorderid
+from production.product p 
+left join sales.salesorderdetail s using (productid)
+order by p.name
+
+
+'40. From the following tables write a SQL query to get all product names and sales order IDs. Order the result set on product name column.'
+
+select p.name, s.salesorderid
+from production.product p 
+join sales.salesorderdetail s using (productid)
+order by p.name
+
+
 'rollup
 state,city
 state
