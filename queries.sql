@@ -359,6 +359,100 @@ join sales.salesorderdetail s using (productid)
 order by p.name
 
 
+'41. From the following tables write a SQL query to retrieve the territory name and BusinessEntityID. 
+The result set includes all salespeople, regardless of whether or not they are assigned a territory.'
+
+select name, businessentityid
+from sales.salesterritory
+right join sales.salesperson using(territoryid)
+
+'42. Write a query in SQL to find the employees full name (firstname and lastname) and city from the following tables. Order the result set on lastname then by firstname.'
+
+select concat(firstname, ' ', lastname) as fullname,city
+from person.person
+join person.businessentityaddress
+using (businessentityid)
+join person.address
+using (addressid)
+order by lastname,firstname
+
+'43. Write a SQL query to return the businessentityid,firstname and lastname columns of all persons in the person table (derived table) with persontype is 'IN' and the last name is 'Adams'. 
+Sort the result set in ascending order on firstname. A SELECT statement after the FROM clause is a derived table.'
+
+
+select businessentityid, firstname,lastname
+from person.person
+where persontype = 'IN'
+and lastname = 'Adams'
+order by firstname
+
+'44. Create a SQL query to retrieve individuals from the following table with a businessentityid inside 1500, a lastname starting with 'Al', and a firstname starting with 'M'.'
+
+
+select businessentityid, lastname, firstname
+from person.person
+where businessentityid <= 1500
+and lastname like 'Al%'
+and firstname like 'M%'
+
+
+'45. Write a SQL query to find the productid, name, and colour of the items 'Blade', 'Crown Race' and 'AWC Logo Cap' using a derived table with multiple values.'
+
+select productid,name,color
+from 
+(select * 
+from production.product
+where name in ('Blade','Crown Race','AWC Logo Cap')) 
+as derviedtable
+
+'46. Create a SQL query to display the total number of sales orders each sales representative receives annually. 
+Sort the result set by SalesPersonID and then by the date component of the orderdate in ascending order. Return the year component of the OrderDate, SalesPersonID, and SalesOrderID.'
+'Used CTE in solution but not working when i do it'
+
+select salespersonid, count(salesorderid), extract(year from orderdate) as year
+from sales.salesorderheader
+where salespersonid is not null
+group by salespersonid,extract(year from orderdate)
+order by salespersonid,year
+
+
+'47. From the following table write a query in SQL to find the average number of sales orders for all the years of the sales representatives.'
+
+select avg(xyz)
+from
+(select salespersonid,count(salesorderid) as xyz
+from sales.salesorderheader
+where salespersonid is not null
+group by salespersonid) as abc
+
+'48. Write a SQL query on the following table to retrieve records with the characters green_ in the LargePhotoFileName field. The following table\'s columns must all be returned.'
+
+select * from
+production.productphoto
+where largephotofilename like \'%green_%'
+
+'49. Write a SQL query to retrieve the mailing address for any company that is outside the United States (US) and in a city whose name starts with Pa. 
+Return Addressline1, Addressline2, city, postalcode, countryregioncode columns.'
+
+select a.addressline1, a.addressline2, a.city, a.postalcode, s.countryregioncode from person.address a
+join person.stateprovince s
+using (stateprovinceid)
+where countryregioncode <> 'US'
+
+'50. From the following table write a query in SQL to fetch first twenty rows. Return jobtitle, hiredate. Order the result set on hiredate column in descending order.'
+
+select jobtitle,hiredate
+from HumanResources.Employee 
+order by hiredate desc
+limit 10 offset 0
+
+
+
+'learnings: window functions but need to learn how exactly partition works and work on more examples
+group by rollup,sets,cube
+limit and offset, derived tables
+after 50 questions revisit unanswered and doubt questions'
+
 'rollup
 state,city
 state
