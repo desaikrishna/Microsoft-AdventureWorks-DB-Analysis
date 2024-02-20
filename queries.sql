@@ -446,12 +446,88 @@ from HumanResources.Employee
 order by hiredate desc
 limit 10 offset 0
 
+'51. From the following tables write a SQL query to retrieve the orders with orderqtys greater than 5 or unitpricediscount less than 1000, and totaldues greater than 100. 
+Return all the columns from the tables.'
+
+select *
+from sales.salesorderheader a
+join sales.salesorderdetail b
+using (salesorderid)
+where a.totaldue > 100
+and (b.orderqty > 5 or
+b.unitpricediscount < 1000)
+
+'52. From the following table write a query in SQL that searches for the word 'red' in the name column. Return name, and color columns from the table.'
+
+select name, color
+from production.product
+where name like '%Red%'
+
+'53. From the following table write a query in SQL to find all the products with a price of $80.99 that contain the word Mountain. Return name, and listprice columns from the table.'
+
+select name, listprice 
+from production.product
+where listprice = '80.99'
+and name like '%Mountain%'
+
+'54. From the following table write a query in SQL to retrieve all the products that contain either the phrase Mountain or Road. Return name, and color columns.'
+
+select name, color 
+from production.product
+where name like '%Mountain%'
+or name like '%Road%'
+
+'55. From the following table write a query in SQL to search for name which contains both the word 'Mountain' and the word 'Black'. Return Name and color.'
+
+select name, color 
+from production.product
+where name like '%Mountain%'
+and name like '%Black%'
+
+'56. From the following table write a query in SQL to return all the product names with at least one word starting with the prefix chain in the Name column.'
+'Not sorted yet'
+
+select name 
+from production.product
+where name like 'Chain %'
+
+'57. From the following table write a query in SQL to return all category descriptions containing strings with prefixes of either chain or full.'
+'Not sorted learn to use regex in postgres for previous and this question'
+
+select name,color
+from production.product
+where name like 'Chain%'
+or name like 'Full%'
+
+
+'58. From the following table write a SQL query to output an employees name and email address, separated by a new line character.'
+
+select concat(p.firstname, ' ', p.lastname) || ' ' || chr(10) || e.emailaddress
+from person.person p
+join person.emailaddress e
+using(businessentityid)
+
+'59. From the following table write a SQL query to locate the position of the string "yellow" where it appears in the product name.'
+
+select name, position('Yellow' in name)
+from production.product
+where name like '%Yellow%'
+
+'60 From the following table write a query in SQL to concatenate the name, color, and productnumber columns.'
+
+select concat(name,' ', color, ' ', productnumber)
+from production.product
+
+
+
+
 
 
 'learnings: window functions but need to learn how exactly partition works and work on more examples
 group by rollup,sets,cube
 limit and offset, derived tables
-after 50 questions revisit unanswered and doubt questions'
+after 50 questions revisit unanswered and doubt questions
+regex expressions, date conversions, string postition '
 
 'rollup
 state,city
