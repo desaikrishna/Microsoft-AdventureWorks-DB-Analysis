@@ -519,15 +519,77 @@ select concat(name,' ', color, ' ', productnumber)
 from production.product
 
 
+'61 Write a SQL query that concatenate the columns name, productnumber, colour, and a new line character from the following table, each separated by a specified character.'
+
+select concat(name,',', color, ',', productnumber)
+from production.product
+
+'62 From the following table write a query in SQL to return the five leftmost characters of each product name.'
+
+select substring(name,1,5)
+from production.product
+
+'63 From the following table write a query in SQL to select the number of characters and the data in FirstName for people located in Australia.'
+
+select firstname,char_length(firstname)
+from sales.vindividualcustomer
+where countryregionname='Australia'
+
+'64 From the following tables write a query in SQL to return the number of characters in the column FirstName and the first and last name of contacts located in Australia.'
+
+select firstname,lastname,char_length(firstname||''||lastname) as leng
+from sales.vstorewithcontacts
+join sales.vstorewithaddresses
+using (businessentityid)
+where countryregionname='Australia'
+
+'65 From the following table write a query in SQL to select product names that have prices between $1000.00 and $1220.00. Return product name as Lower, Upper, and also LowerUpper.'
+'did not understand question properly'
+
+SELECT LOWER(SUBSTRING(Name, 1, 25)) AS Lower,   
+       UPPER(SUBSTRING(Name, 1, 25)) AS Upper,   
+       LOWER(UPPER(SUBSTRING(Name, 1, 25))) As LowerUpper  
+FROM production.Product  
+WHERE standardcost between 1000.00 and 1220.00;
+
+'66 Write a query in SQL to remove the spaces from the beginning of a string.'
+
+SELECT TRIM('     SQL Tutorial!     ') AS TrimmedString;
+
+'67 From the following table write a query in SQL to remove the substring 'HN' from the start of the column productnumber. 
+Filter the results to only show those productnumbers that start with "HN". Return original productnumber column and 'TrimmedProductnumber'.'
+
+select productnumber, substring(productnumber,4,7) as TrimmedProductNumber
+from production.product
+where substring(productnumber,1,2)='HN'
 
 
+'68 From the following table write a query in SQL to repeat a 0 character four times in front of a production line for production line 'T'.'
+
+select name, ('0000'||''||productline) as LineCode
+from production.product
+where productline = 'T'
+
+'69 From the following table write a SQL query to retrieve all contact first names with the characters inverted for people whose businessentityid is less than 6.'
+
+select firstname, reverse(firstname) as inverted
+from person.person
+where businessentityid < 6
+
+
+'70 From the following table write a query in SQL to return the eight rightmost characters of each name of the product. 
+Also return name, productnumber column. Sort the result set in ascending order on productnumber.'
+
+select name, productnumber,substring(name,8,length(name))
+from production.product
+order by productnumber
 
 
 'learnings: window functions but need to learn how exactly partition works and work on more examples
 group by rollup,sets,cube
 limit and offset, derived tables
 after 50 questions revisit unanswered and doubt questions
-regex expressions, date conversions, string postition '
+regex expressions, date conversions, string postition, length of string, trim, substring, right'
 
 'rollup
 state,city
