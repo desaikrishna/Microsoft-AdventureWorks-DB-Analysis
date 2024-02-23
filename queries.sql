@@ -584,12 +584,76 @@ select name, productnumber,substring(name,8,length(name))
 from production.product
 order by productnumber
 
+'71 Write a query in SQL to remove the spaces at the end of a string.'
+
+SELECT TRIM('text then five spaces     after space') AS TrimmedString;
+
+'72 From the following table write a query in SQL to fetch the rows for the product name ends with the letter 'S' or 'M' or 'L'. Return productnumber and name.'
+
+select productnumber,name
+from production.product
+where name like '%M'
+or name like '%S'
+or name like '%L'
+
+'73 From the following table write a query in SQL to replace null values with 'N/A' and return the names separated by commas in a single row.'
+
+select string_agg(coalesce(firstname,'N/A'),',') as test
+from person.person
+
+'74 From the following table write a query in SQL to return the names and modified date separated by commas in a single row.'
+
+select string_agg((firstname||' '|| lastname||' ('||modifieddate)||')',',') as test
+from person.person 
+
+'75 From the following table write a query in SQL to find the email addresses of employees and groups them by city. Return top ten rows.'
+
+select city,string_agg(emailaddress,':') as emails
+from person.emailaddress p
+join Person.BusinessEntityAddress b
+using (businessentityid)
+join person.address a
+using(addressid)
+group by city
+
+
+'76 From the following table write a query in SQL to create a new job title called "Production Assistant" in place of "Production Supervisor".'
+
+select jobtitle, overlay(jobtitle placing 'Assistant' from 12 for 10) as "New Jobtitle"
+from  HumanResources.Employee
+where jobtitle like 'Production Supervisor%'
+
+'77 From the following table write a SQL query to retrieve all the employees whose job titles begin with "Sales". Return firstname, middlename, lastname and jobtitle column.'
+
+select firstname, middlename, lastname, jobtitle
+from person.person
+join humanresources.employee
+using(businessentityid)
+where jobtitle like 'Sales%'
+
+'78 From the following table write a query in SQL to return the last name of people so that it is in uppercase, trimmed, and concatenated with the first name.'
+
+select (upper(lastname)||','||firstname) as name
+from person.person
+
+'79 From the following table write a query in SQL to show a resulting expression that is too small to display. 
+Return FirstName, LastName, Title, and SickLeaveHours. The SickLeaveHours will be shown as a small expression in text format.'
+'Question is not clear check with chatgpt'
+
+'80 From the following table write a query in SQL to retrieve the name of the products. Product, that have 33 as the first two digits of listprice.'
+
+select substring(Name, 1, 30) AS ProductName, ListPrice  
+from Production.Product  
+where cast(ListPrice AS char(2)) LIKE '33%';
+
+
+
 
 'learnings: window functions but need to learn how exactly partition works and work on more examples
 group by rollup,sets,cube
 limit and offset, derived tables
 after 50 questions revisit unanswered and doubt questions
-regex expressions, date conversions, string postition, length of string, trim, substring, right'
+regex expressions, date conversions, string postition, length of string, trim, substring, right,coalesce,string_agg,overlay,casting one type to another and its restriction'
 
 'rollup
 state,city
