@@ -647,7 +647,85 @@ from Production.Product
 where cast(ListPrice AS char(2)) LIKE '33%';
 
 
+'81 From the following table write a query in SQL to calculate by dividing the total year-to-date sales (SalesYTD) by the commission percentage (CommissionPCT). 
+Return SalesYTD, CommissionPCT, and the value rounded to the nearest whole number.'
 
+select salesytd, commissionpct, cast(round(salesytd/commissionpct,0) as int) as value
+from sales.salesperson
+where commissionpct != 0
+
+'82 From the following table write a query in SQL to find those persons that have a 2 in the first digit of their SalesYTD. 
+Convert the SalesYTD column to an int type, and then to a char(20) type. Return FirstName, LastName, SalesYTD, and BusinessEntityID.'
+
+select firstname, lastname, s.businessentityid,salesytd
+from sales.salesperson s
+join person.person p
+using(businessentityid)
+where cast(salesytd as char(1)) like '2%'
+
+'83 From the following table write a query in SQL to convert the Name column to a char(16) column. 
+Convert those rows if the name starts with 'Long-Sleeve Logo Jersey'. Return name of the product and listprice.'
+
+select cast(name as char(16)),listprice
+from production.product
+where name like 'Long-Sleeve Logo Jersey%'
+
+'84 From the following table write a SQL query to determine the discount price for the salesorderid 46672. 
+Calculate only those orders with discounts of more than.02 percent. Return productid, UnitPrice, UnitPriceDiscount, and DiscountPrice (UnitPrice*UnitPriceDiscount ).'
+
+select productid,unitprice,unitpricediscount,unitprice*unitpricediscount
+from sales.salesorderdetail
+where unitpricediscount > 0.2
+
+'85 From the following table write a query in SQL to calculate the average vacation hours, and the sum of sick leave hours, that the vice presidents have used.'
+
+select avg(vacationhours), sum(sickleavehours)
+from humanresources.employee
+where jobtitle like '%Vice President%' a
+
+'86 From the following table write a query in SQL to calculate the average bonus received and the sum of year-to-date sales for each territory.
+ Return territoryid, Average bonus, and YTD sales.'
+
+select territoryid,avg(bonus), sum(salesytd)
+from sales.salesperson
+where territoryid is not null
+group by territoryid
+order by territoryid
+
+'87 From the following table write a query in SQL to return the average list price of products. Consider the calculation only on unique values.'
+
+select avg(distinct(listprice))
+from production.product
+
+'88 From the following table write a query in SQL to return a moving average of yearly sales for each territory. 
+Return BusinessEntityID, TerritoryID, SalesYear, SalesYTD, average SalesYTD as MovingAvg, and total SalesYTD as CumulativeTotal.'
+
+select territoryid, extract(year from modifieddate),avg(salesytd) as movingavg, sum(salesytd) as cumulativeTotal
+from sales.salesperson
+where territoryid is not null
+group by territoryid,extract(year from modifieddate)
+order by extract(year from modifieddate)
+
+'this query you can also use window function, since we need to display businessentityid and salesytd also'
+
+select BusinessEntityID, TerritoryID   
+   ,DATE_PART('year',ModifiedDate) AS SalesYear  
+   ,cast(SalesYTD as VARCHAR(20)) AS  SalesYTD  
+   ,avg(SalesYTD) OVER (partition by TerritoryID order by DATE_PART('year',ModifiedDate)) AS MovingAvg  
+   ,sum(SalesYTD) OVER (partition by TerritoryID order by DATE_PART('year',ModifiedDate)) AS CumulativeTotal  
+FROM Sales.SalesPerson  
+WHERE TerritoryID IS NULL OR TerritoryID < 5  
+ORDER BY TerritoryID,SalesYear;
+
+'89 From the following table write a query in SQL to return a moving average of sales, by year, for all sales territories. 
+Return BusinessEntityID, TerritoryID, SalesYear, SalesYTD, average SalesYTD as MovingAvg, and total SalesYTD as CumulativeTotal.'
+
+'Same as above'
+
+'90 From the following table write a query in SQL to return the number of different titles that employees can hold.'
+
+select count(distinct(jobtitle))
+from HumanResources.Employee
 
 'learnings: window functions but need to learn how exactly partition works and work on more examples
 group by rollup,sets,cube
