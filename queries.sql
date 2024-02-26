@@ -727,11 +727,94 @@ Return BusinessEntityID, TerritoryID, SalesYear, SalesYTD, average SalesYTD as M
 select count(distinct(jobtitle))
 from HumanResources.Employee
 
+
+'91 From the following table write a query in SQL to find the total number of employees.'
+
+select count(businessentityid)
+from HumanResources.Employee
+
+'92 From the following table write a query in SQL to find the average bonus for the salespersons who achieved the sales quota above 25000. 
+Return number of salespersons, and average bonus.'
+
+select count(businessentityid),avg(bonus)
+from Sales.SalesPerson
+where salesquota > 25000
+
+'93 From the following tables wirte a query in SQL to return aggregated values for each department. 
+Return name, minimum salary, maximum salary, average salary, and number of employees in each department.'
+
+select d.name,min(rate), max(rate), avg(rate), count(h.businessentityid)
+from HumanResources.employeepayhistory e
+join HumanResources.employeedepartmenthistory h
+using(businessentityid)
+join HumanResources.Department d
+using(departmentid)
+where h.enddate is null
+group by d.departmentid
+order by d.name
+
+'94 From the following tables write a SQL query to return the departments of a company that each have more than 15 employees.'
+
+select jobtitle, count(businessentityid)
+from humanresources.employee
+group by jobtitle
+having count(businessentityid) > 15
+
+'95 From the following table write a query in SQL to find the number of products that ordered in each of the specified sales orders.'
+'Check how to solve this solution written here and given is wrong'
+
+select salesorderid, count(productid)
+from sales.salesorderdetail
+group by salesorderid
+order by count(productid) desc
+
+
+'96 From the following table write a query in SQL to compute the statistical variance of the sales quota values for each quarter in a calendar year for a sales person. 
+Return year, quarter, salesquota and variance of salesquota.'
+
+'work on it later'
+select quotadate,salesquota,
+case when extract(month from quotadate) <=3 then '1'
+when extract(month from quotadate) > 3 and extract(month from quotadate) <= 3 then '2'
+when extract(month from quotadate) > 6 and extract(month from quotadate) <= 9 then '3'
+else '4'
+end as quater
+from sales.salespersonquotahistory
+where extract(year from quotadate) = 2012a
+
+'97 From the following table write a query in SQL to populate the variance of all unique values as well as all values, including any duplicates values of SalesQuota column.'
+
+'work on it later'
+
+'98 From the following table write a query in SQL to return the total ListPrice and StandardCost of products for each color. 
+Products that name starts with \'Mountain\' and ListPrice is more than zero. Return Color, total list price, total standardcode. Sort the result set on color in ascending order.'
+
+select color,sum(listprice),sum(standardcost)
+from production.product
+where listprice > 0 and name like 'Mountain%' and color is not null
+group by color
+
+'99 From the following table write a query in SQL to find the TotalSalesYTD of each SalesQuota. 
+Show the summary of the TotalSalesYTD amounts for all SalesQuota groups. Return SalesQuota and TotalSalesYTD.'
+'check what is grouping in this solution provided'
+
+select salesquota,sum(salesytd) as totalsalesytd
+from sales.salesperson
+where salesquota is not null
+group by salesquota
+
+'100 From the following table write a query in SQL to calculate the sum of the ListPrice and StandardCost for each color. Return color, sum of ListPrice.'
+
+select color,sum(listprice),sum(standardcost)
+from production.product
+group by color
+
+
 'learnings: window functions but need to learn how exactly partition works and work on more examples
 group by rollup,sets,cube
 limit and offset, derived tables
 after 50 questions revisit unanswered and doubt questions
-regex expressions, date conversions, string postition, length of string, trim, substring, right,coalesce,string_agg,overlay,casting one type to another and its restriction'
+regex expressions, date conversions, string postition, length of string, trim, substring, right,coalesce,string_agg,overlay,casting one type to another and its restriction,grouping func'
 
 'rollup
 state,city
